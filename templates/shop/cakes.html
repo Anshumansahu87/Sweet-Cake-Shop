@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Shop Cakes | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="container py-5">
+<div class="page-title"><span class="eyebrow">THE CAKE MENU 🍰</span><h1>Find your perfect cake.</h1><p>Fresh favourites for every celebration.</p></div>
+
+<form class="filter-box row g-2 align-items-center mb-3">
+<div class="col-md-6"><input class="form-control" name="q" value="{{ q }}" placeholder="🔎 Search chocolate, vanilla, red velvet..."></div>
+<div class="col-md-4"><select class="form-select" name="category"><option value="">All categories</option>{% for c in categories %}<option value="{{ c.slug }}" {% if selected_category == c.slug %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+<div class="col-md-2 d-flex gap-2"><button class="btn btn-primary flex-grow-1">Search</button>{% if q or selected_category %}<a class="btn btn-outline-secondary" href="{% url 'shop:cakes' %}">Clear</a>{% endif %}</div>
+</form>
+
+<div class="quick-filters">
+<a href="{% url 'shop:cakes' %}" class="{% if not selected_category %}selected{% endif %}">🍰 All</a>
+{% for c in categories %}<a href="{% url 'shop:cakes' %}?category={{ c.slug }}" class="{% if selected_category == c.slug %}selected{% endif %}">{{ c.name }}</a>{% endfor %}
+</div>
+
+<div class="row g-4">
+{% for cake in cakes %}<div class="col-6 col-lg-3">{% include "shop/card.html" %}</div>
+{% empty %}<div class="empty-state"><div>🔎</div><h3>No cakes found</h3><p>Try another search or category.</p><a class="btn btn-primary" href="{% url 'shop:cakes' %}">Show all cakes</a></div>{% endfor %}
+</div>
+</div>
+{% endblock %}

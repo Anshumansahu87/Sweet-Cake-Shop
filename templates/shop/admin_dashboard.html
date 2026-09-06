@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="admin-shell">
+  <aside class="admin-side"><div class="admin-brand">🍰 <span>Sweet Cake Shop</span><small>ADMIN PANEL</small></div>
+    <nav>
+      <a class="active" href="{% url 'shop:admin_dashboard' %}">📊 <span>Dashboard</span></a>
+      <a href="{% url 'shop:cakes' %}">🎂 <span>View Cakes</span></a>
+      <a href="/admin/shop/cake/">🧁 <span>Manage Cakes</span></a>
+      <a href="/admin/shop/category/">🏷️ <span>Categories</span></a>
+      <a href="/admin/shop/order/">📦 <span>Orders</span></a>
+      <a href="/admin/shop/customcakerequest/">🎨 <span>Custom Cakes</span></a>
+      <a href="/admin/shop/notification/">📱 <span>Notifications</span></a>
+      <a href="/admin/auth/user/">👥 <span>Customers</span></a>
+      <a href="/admin/">⚙️ <span>Django Admin</span></a>
+    </nav>
+    <div class="admin-side-bottom"><a href="{% url 'shop:home' %}">← Back to Shop</a></div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-top"><div><span class="eyebrow">SWEET CAKE SHOP</span><h1>Dashboard</h1><p>Manage orders, products, customers and notifications.</p></div><a class="admin-shop-btn" href="{% url 'shop:home' %}">Open Store ↗</a></div>
+    <section class="admin-stats">
+      <div class="admin-stat"><div class="stat-icon">📦</div><span>Total Orders</span><strong>{{ total_orders }}</strong><small>All placed orders</small></div>
+      <div class="admin-stat"><div class="stat-icon">💰</div><span>Total Sales</span><strong>₹{{ total_sales|floatformat:0 }}</strong><small>Paid/COD orders</small></div>
+      <div class="admin-stat"><div class="stat-icon">🎂</div><span>Total Cakes</span><strong>{{ total_cakes }}</strong><small>Products listed</small></div>
+      <div class="admin-stat"><div class="stat-icon">👥</div><span>Customers</span><strong>{{ customers }}</strong><small>Registered users</small></div>
+    </section>
+    <section class="admin-grid">
+      <div class="admin-panel"><div class="panel-heading"><div><h2>Order Pipeline</h2><p>Live database counts</p></div><span class="panel-badge">LIVE DATA</span></div>
+        <div class="status-box"><span>⏳ Pending / Baking</span><strong>{{ pending_orders }}</strong></div>
+        <div class="status-box"><span>💳 Online Payments</span><strong>{{ paid_online }}</strong></div>
+        <div class="status-box"><span>🚚 Delivered</span><strong>{{ delivered_orders }}</strong></div>
+      </div>
+      <div class="admin-panel"><div class="panel-heading"><div><h2>Low Stock</h2><p>Restock soon</p></div></div>
+        {% for cake in low_stock %}<div class="stock-row"><span class="stock-cake">🎂</span><div><b>{{ cake.name }}</b><small>₹{{ cake.price }}</small></div><strong>{{ cake.stock }} left</strong></div>{% empty %}<div class="dashboard-empty small-empty">✅<b>Stock looks good</b></div>{% endfor %}
+      </div>
+    </section>
+    <section class="admin-panel mb-3"><div class="panel-heading"><div><h2>Recent Orders</h2><p>Update status and trigger customer notification.</p></div><a href="/admin/shop/order/">Open Django Admin →</a></div>
+      <div class="table-wrap"><table class="admin-table"><thead><tr><th>Order</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Update</th></tr></thead><tbody>
+      {% for order in recent_orders %}<tr><td>#{{ order.order_number }}</td><td>{{ order.customer_name }}</td><td>₹{{ order.total }}</td><td>{{ order.payment_status }}</td><td><span class="status-pill">{{ order.status }}</span></td><td><form method="post" action="{% url 'shop:update_order_status' order.order_number %}" class="status-form">{% csrf_token %}<select name="status"><option value="PLACED" {% if order.status == "PLACED" %}selected{% endif %}>Placed</option><option value="BAKING" {% if order.status == "BAKING" %}selected{% endif %}>Baking</option><option value="OUT" {% if order.status == "OUT" %}selected{% endif %}>Out</option><option value="DELIVERED" {% if order.status == "DELIVERED" %}selected{% endif %}>Delivered</option><option value="CANCELLED" {% if order.status == "CANCELLED" %}selected{% endif %}>Cancelled</option></select><button>Save</button></form></td></tr>
+      {% empty %}<tr><td colspan="6" class="empty-table">No orders yet.</td></tr>{% endfor %}</tbody></table></div>
+    </section>
+    <section class="admin-grid">
+      <div class="admin-panel"><div class="panel-heading"><div><h2>Custom Cake Requests</h2><p>Latest personalised orders</p></div></div>
+      {% for item in custom_requests %}<div class="stock-row"><span class="stock-cake">🎨</span><div><b>#{{ item.id }} • {{ item.user.username }}</b><small>{{ item.flavour }} • {{ item.size }} • {{ item.delivery_date }}</small></div><strong>{{ item.status }}</strong></div>{% empty %}<div class="dashboard-empty small-empty">🎂<b>No custom requests yet</b></div>{% endfor %}</div>
+      <div class="admin-panel"><div class="panel-heading"><div><h2>Notifications</h2><p>SMS/WhatsApp delivery log</p></div></div>
+      {% for n in notifications %}<div class="stock-row"><span class="stock-cake">📱</span><div><b>{{ n.channel }} • {{ n.phone }}</b><small>{{ n.message|truncatechars:55 }}</small></div><strong>{{ n.status }}</strong></div>{% empty %}<div class="dashboard-empty small-empty">📱<b>No notifications yet</b></div>{% endfor %}</div>
+    </section>
+    <div class="admin-footer-note">🔒 Staff-only dashboard • Same Django database • Notifications require provider credentials for real delivery.</div>
+  </main>
+</div>
+{% endblock %}

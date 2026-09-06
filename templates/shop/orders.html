@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My Orders | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-title"><span class="eyebrow">ACCOUNT</span><h1>My Orders 📦</h1><p>Track your cakes from kitchen to doorstep.</p></div>
+  {% for order in orders %}
+  <div class="order-card">
+    <div class="order-top"><div><span class="small text-muted">ORDER</span><h4>{{ order.order_number }}</h4><span class="text-muted">{{ order.created_at|date:"d M Y, h:i A" }}</span></div><div class="text-end"><strong>₹{{ order.total }}</strong><div><span class="status">{{ order.status }}</span> <span class="payment-status">{{ order.payment_status }}</span></div></div></div>
+    <div class="order-items">{% for item in order.items.all %}<div><span>{{ item.cake.name }} × {{ item.quantity }}</span><strong>₹{{ item.subtotal }}</strong></div>{% endfor %}</div>
+    <div class="tracking">
+      <div class="track-step {% if order.status == 'PLACED' or order.status == 'BAKING' or order.status == 'OUT' or order.status == 'DELIVERED' %}done{% endif %}">📝<small>Placed</small></div>
+      <div class="track-line"></div>
+      <div class="track-step {% if order.status == 'BAKING' or order.status == 'OUT' or order.status == 'DELIVERED' %}done{% endif %}">👨‍🍳<small>Baking</small></div>
+      <div class="track-line"></div>
+      <div class="track-step {% if order.status == 'OUT' or order.status == 'DELIVERED' %}done{% endif %}">🚚<small>Out for delivery</small></div>
+      <div class="track-line"></div>
+      <div class="track-step {% if order.status == 'DELIVERED' %}done{% endif %}">🎉<small>Delivered</small></div>
+    </div>
+    <div class="delivery-meta">📅 {{ order.delivery_date|date:"d M Y" }} &nbsp; • &nbsp; 🕒 {{ order.delivery_slot }} {% if order.custom_message %}&nbsp; • &nbsp; 🎁 "{{ order.custom_message }}"{% endif %}</div>
+  </div>
+  {% empty %}<div class="empty-state"><div>📦</div><h2>No orders yet</h2><a class="btn btn-primary" href="{% url 'shop:cakes' %}">Order Your First Cake</a></div>{% endfor %}
+</div>
+{% endblock %}
