@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Checkout | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-title"><span class="eyebrow">CHECKOUT 🔒</span><h1>Almost there! 🎂</h1><p>Enter delivery details, apply a coupon and choose payment.</p></div>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="shop-card p-4">
+        <h3>Delivery details</h3>
+        <form method="post" id="checkoutForm">{% csrf_token %}
+          {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          {% endfor %}
+          <div class="checkout-features"><span>🛵 Fast delivery</span><span>🔒 Secure</span><span>💗 Freshly baked</span></div>
+          <button id="placeOrderBtn" class="btn btn-primary btn-lg w-100" type="submit">Place Order →</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="summary sticky-top" style="top:20px">
+        <h3>Order Summary</h3>
+        <div class="line"><span>Subtotal</span><strong>₹{{ subtotal }}</strong></div>
+        <div class="line"><span>Discount</span><strong class="text-success">- ₹{{ discount }}</strong></div>
+        <div class="line total-line"><strong>Total</strong><strong>₹{{ total }}</strong></div>
+        <hr>
+        <h5>Payment</h5>
+        <div class="payment-choice"><span>💵</span><div><b>Cash on Delivery</b><small>Pay when your cake arrives.</small></div></div>
+        <div class="payment-choice"><span>💳</span><div><b>Razorpay Online</b><small>UPI / Card / Netbanking through Razorpay.</small></div></div>
+        <div class="payment-note">🔐 Online payment is verified on the server. Test/Live keys are controlled through .env.</div>
+        <div class="coupon-hint">🎁 Try <b>SWEET10</b> on eligible orders.</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const form=document.getElementById('checkoutForm'), select=document.querySelector('[name="payment_method"]'), btn=document.getElementById('placeOrderBtn');
+  function sync(){if(select && select.value==='ONLINE') btn.textContent='Continue to Payment →'; else btn.textContent='Place Order →';}
+  if(select){select.addEventListener('change',sync);sync();}
+  form?.addEventListener('submit',function(){btn.disabled=true;btn.textContent='Processing...';});
+});
+</script>
+{% endblock %}

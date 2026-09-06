@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ cake.name }} | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="container py-5">
+<div class="row g-5 align-items-center">
+<div class="col-lg-6">
+  <div class="detail-photo">
+    {% if cake.display_image %}<img src="{{ cake.display_image }}" alt="{{ cake.name }}">{% else %}<div class="cake-fallback">🎂</div>{% endif %}
+    <span class="detail-floating">✨ Fresh Today</span>
+  </div>
+</div>
+<div class="col-lg-6">
+<span class="eyebrow">{{ cake.category.name }}</span>
+<h1 class="detail-title">{{ cake.name }}</h1>
+<div class="rating">★★★★★ <span>Customer favourite</span></div>
+<div class="detail-price">₹{{ cake.price }}</div>
+<div class="chips"><span>🎂 Freshly baked</span>{% if cake.eggless %}<span>🌿 Eggless</span>{% endif %}<span>📦 In stock: {{ cake.stock }}</span></div>
+<p class="detail-description">{{ cake.description }}</p>
+
+<div class="detail-actions">
+<form method="post" action="{% url 'shop:add_cart' cake.id %}" class="buy-box">{% csrf_token %}
+<div class="qty-control">
+<button type="button" class="qty-minus">−</button>
+<input id="detailQty" type="number" name="quantity" value="1" min="1" max="{{ cake.stock }}" aria-label="Quantity">
+<button type="button" class="qty-plus">+</button>
+</div>
+<button class="btn btn-primary btn-lg flex-grow-1" type="submit">Add to Cart 🛒</button>
+</form>
+<button type="button" class="detail-wish" data-url="{% url 'shop:toggle_wishlist' cake.id %}" onclick="toggleWishlist(this)">♡ Save to Wishlist</button>
+</div>
+
+<div class="trust-row"><span>🔒 Secure</span><span>🛵 Fast delivery</span><span>💗 Freshly made</span></div>
+<p class="small text-muted mt-3">Secure checkout • Cash on Delivery • Razorpay Test Mode</p>
+</div></div></div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ const input=document.getElementById('detailQty');
+ if(!input)return;
+ document.querySelector('.qty-minus').addEventListener('click',()=>{input.value=Math.max(1,Number(input.value||1)-1)});
+ document.querySelector('.qty-plus').addEventListener('click',()=>{input.value=Math.min(Number(input.max||99),Number(input.value||1)+1)});
+});
+</script>
+{% endblock %}

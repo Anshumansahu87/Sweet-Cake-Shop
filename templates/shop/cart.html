@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Your Cart | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="container py-5">
+<div class="page-title"><span class="eyebrow">YOUR BAG 🛒</span><h1>Shopping cart</h1><p>Review your cakes before checkout.</p></div>
+{% if items %}
+<div class="row g-4">
+<div class="col-lg-8">
+{% for item in items %}
+<div class="cart-item">
+  <div class="cart-img">{% if item.cake.display_image %}<img src="{{ item.cake.display_image }}" alt="{{ item.cake.name }}" loading="lazy">{% else %}🎂{% endif %}</div>
+  <div class="flex-grow-1">
+    <h4>{{ item.cake.name }}</h4>
+    <p class="text-muted mb-2">₹{{ item.cake.price }} each</p>
+    <form method="post" action="{% url 'shop:update_cart' item.cake.id %}" class="cart-update-form">
+      {% csrf_token %}
+      <div class="qty-control">
+        <button type="button" class="qty-minus">−</button>
+        <input class="qty" type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.cake.stock }}">
+        <button type="button" class="qty-plus">+</button>
+      </div>
+      <button class="btn btn-outline-secondary" type="submit">Update</button>
+    </form>
+    <form method="post" action="{% url 'shop:remove_cart' item.cake.id %}" class="remove-form">
+      {% csrf_token %}<button class="remove" type="submit">Remove</button>
+    </form>
+  </div>
+  <strong class="subtotal">₹{{ item.subtotal }}</strong>
+</div>
+{% endfor %}
+</div>
+<div class="col-lg-4">
+<div class="summary">
+<h3>Order summary</h3>
+<div class="line"><span>Items</span><span>{{ cart_count }}</span></div>
+<div class="line"><span>Delivery</span><span>{% if total >= 500 %}FREE{% else %}Calculated at checkout{% endif %}</span></div>
+<div class="line total-line"><strong>Total</strong><strong>₹{{ total }}</strong></div>
+<a href="{% url 'shop:checkout' %}" class="btn btn-primary btn-lg w-100">Proceed to Checkout →</a>
+<a href="{% url 'shop:cakes' %}" class="continue-shopping">← Continue Shopping</a>
+<p class="small text-muted text-center mt-3">COD & Razorpay Test Mode available</p>
+</div>
+</div></div>
+{% else %}
+<div class="empty-state"><div>🛒</div><h2>Your cart is empty</h2><p>Add a delicious cake to get started.</p><a class="btn btn-primary" href="{% url 'shop:cakes' %}">Browse Cakes</a></div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ document.querySelectorAll('.cart-update-form').forEach(form=>{
+   const input=form.querySelector('.qty'), minus=form.querySelector('.qty-minus'), plus=form.querySelector('.qty-plus');
+   minus.addEventListener('click',()=>input.value=Math.max(1,Number(input.value||1)-1));
+   plus.addEventListener('click',()=>input.value=Math.min(Number(input.max||99),Number(input.value||1)+1));
+ });
+});
+</script>
+{% endblock %}

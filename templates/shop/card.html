@@ -1,0 +1,18 @@
+<div class="cake-card h-100">
+<a href="{% url 'shop:detail' cake.slug %}" class="cake-image-wrap">
+{% if cake.display_image %}<img src="{{ cake.display_image }}" alt="{{ cake.name }}" class="cake-image" loading="lazy">{% else %}<div class="cake-fallback">🎂</div>{% endif %}
+{% if cake.featured %}<span class="best-tag">Best Seller</span>{% endif %}
+{% if cake.eggless %}<span class="egg-tag">EGGLESS</span>{% endif %}
+</a>
+<div class="cake-card-body">
+<div class="card-topline">
+  <h3><a href="{% url 'shop:detail' cake.slug %}">{{ cake.name }}</a></h3>
+  <button type="button" class="wish-btn" data-url="{% url 'shop:toggle_wishlist' cake.id %}" aria-label="Add to wishlist" onclick="toggleWishlist(this)">♡</button>
+</div>
+<div class="rating">★★★★★ <span>({{ forloop.counter|add:"50" }})</span></div>
+<div class="cake-price">₹{{ cake.price }}</div>
+<form method="post" action="{% url 'shop:add_cart' cake.id %}">{% csrf_token %}
+<button class="add-cart" type="submit">Add to Cart 🛒</button>
+</form>
+</div>
+</div>

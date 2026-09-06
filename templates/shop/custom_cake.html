@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Custom Cake | Sweet Cake Shop{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-title"><span class="eyebrow">MAKE IT SPECIAL 🎨</span><h1>Design Your Custom Cake</h1><p>Tell us what you want and our team will prepare it for your occasion.</p></div>
+  <div class="custom-cake-card">
+    <div class="custom-intro"><div class="big-cake">🎂</div><h2>Your idea, our cake!</h2><p>Choose flavour, size, theme and the message you want on the cake.</p><div class="custom-points"><span>✨ Personalised</span><span>🍓 Freshly made</span><span>💗 Made with care</span></div></div>
+    <div class="custom-form"><form method="post">{% csrf_token %}
+      {% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>{% endfor %}
+      <button class="btn btn-primary btn-lg w-100">Submit Custom Cake Request 🎂</button>
+    </form></div>
+  </div>
+</div>
+{% endblock %}
