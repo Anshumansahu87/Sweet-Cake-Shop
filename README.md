@@ -1,6 +1,6 @@
 # 🍰 Sweet Cake Shop
 
-A complete **online cake ordering web application** built with **Django**. Customers can browse cakes, search/filter products, manage a cart and wishlist, request custom cakes, apply coupons, place orders, pay online using Razorpay, and verify online payments using an email OTP.
+A complete **online cake ordering web application** built with **Python and Django**. Customers can browse cakes, search/filter products, manage a cart and wishlist, request custom cakes, apply coupons, place orders, pay online using Razorpay, and verify online payments using an email OTP.
 
 ---
 
