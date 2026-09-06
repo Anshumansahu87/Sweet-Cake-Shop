@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block title %}Order Confirmed | Sweet Cake Shop{% endblock %}
-{% block content %}
-<div class="container py-5"><div class="success-card"><div class="success-icon">✓</div><span class="eyebrow">THANK YOU ❤️</span><h1>Order confirmed!</h1><p class="lead">Your delicious cake is now in our kitchen.</p>
-<div class="order-box"><span>Order number</span><strong>{{ order.order_number }}</strong><span>Total</span><strong>₹{{ order.total }}</strong><span>Payment</span><strong>{{ order.payment_status }}</strong><span>Delivery</span><strong>{{ order.delivery_date|date:"d M Y" }} • {{ order.delivery_slot }}</strong></div>
-<div class="notification-success">📱 <b>Order confirmation message sent!</b><br><small>Demo mode: a notification was created for the customer phone number. If Twilio is configured, the same message can be sent as a real SMS.</small></div>
-<div class="phone-notification"><div class="phone-notification-title">💬 Sweet Cake Shop</div><div>🎉 Your cake order <b>{{ order.order_number }}</b> has been confirmed!</div><div class="small text-muted mt-1">Payment received • ₹{{ order.total }}</div></div>
-<div class="d-flex justify-content-center gap-2 flex-wrap mt-4"><a class="btn btn-primary" href="{% url 'shop:orders' %}">Track My Order</a><a class="btn btn-outline-dark" href="{% url 'shop:cakes' %}">Continue Shopping</a></div></div></div>
-{% endblock %}
